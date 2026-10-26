@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config';
+---
+
+<Base title="Quem somos" description={`Conheça o ${site.name}: quem somos, o que cobrimos e como trabalhamos.`}>
+  <div class="container page">
+    <header class="page-head">
+      <h1>Quem somos</h1>
+    </header>
+    <div class="prose plain" style="max-width:760px">
+      <p>
+        O {site.name} é um portal de notícias independente sobre tecnologia, política e entretenimento. Nosso
+        objetivo é explicar o que está acontecendo com clareza, contexto e checagem, sem exagero e sem pressa de
+        publicar antes de confirmar.
+      </p>
+      <h2>O que cobrimos</h2>
+      <ul>
+        <li><strong>Tecnologia:</strong> celulares, inteligência artificial, segurança digital e o impacto no dia a dia.</li>
+        <li><strong>Política:</strong> Congresso, governo e decisões públicas explicadas sem juridiquês.</li>
+        <li><strong>Entretenimento:</strong> cinema, séries, música, games e cultura pop.</li>
+      </ul>
+      <h2>Como trabalhamos</h2>
+      <p>
+        [Descreva aqui, com suas palavras, como a redação apura, confirma e corrige as informações. Cite o que
+        fazem quando erram: onde a correção aparece e como o leitor pode pedir uma revisão.]
+      </p>
+      <h2>Quem está por trás</h2>
+      <p>
+        [Quem é a pessoa ou a empresa responsável pelo site: nome, cidade e, se houver, CNPJ. Quanto mais
+        transparente esta página, melhor para a confiança dos leitores e para o Google.]
+      </p>
+      <h2>Fale com a gente</h2>
+      <p>Pautas, correções e sugestões: <a href="/contato/">página de contato</a>.</p>
+    </div>
+  </div>
+</Base>

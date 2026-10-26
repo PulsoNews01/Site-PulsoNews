@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
+import PostCard from '../components/PostCard.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Thumb from '../components/Thumb.astro';
+import { site } from '../config';
+import { categories, categoryList, catStyle } from '../lib/categories';
+import { getPosts, postUrl, fmtDateTime, fmtTime, readMinutes } from '../lib/posts';
+
+const posts = await getPosts();
+const hero = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = hero ? posts.filter((p) => p.id !== hero.id) : [];
+const side = rest.slice(0, 2);
+const feedAll = rest.slice(2);
+// Enquanto houver poucas matérias, o feed repete todas para não ficar vazio.
+const feed = feedAll.length > 0 ? feedAll : posts;
+const live = posts.slice(0, 3);
+const destaques = posts.filter((p) => p.data.featured).concat(posts.filter((p) => !p.data.featured));
+
+// Assuntos mais usados nas matérias (barra "Em alta").
+const contagem = new Map<string, number>();
+posts.forEach((p) => (p.data.tags ?? []).forEach((t) => contagem.set(t, (contagem.get(t) ?? 0) + 1)));
+const tags = [...contagem.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t);
+
+const tabs = [
+  { id: 'all', label: 'Tudo' },
+  ...categoryList.map((c) => ({ id: c.slug, label: c.short })),
+];
+---
+
+<Base title={site.name} description={site.description}>
+  {
+    tags.length > 0 && (
+      <div class="tagbar">
+        <div class="container">
+          <span class="tagbar-title">EM ALTA:</span>
+          {tags.map((t) => (
+            <a class="tag" href={`/busca/?q=${encodeURIComponent(t)}`}>#{t.replace(/\s+/g, '')}</a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  <div class="container page stack">
+    {
+      hero ? (
+        <section class="hero-wrap" aria-label="Destaques">
+          <article class="hero" style={catStyle(hero.data.category)}>
+            <div class="hero-media media-fill">
+              <Thumb post={hero} eager />
+              <div class="scrim" />
+              <div class="hero-badges">
+                <span class="chip">{categories[hero.data.category].label}</span>
+                <span class="chip chip-yellow">Destaque</span>
+              </div>
+              <div class="hero-text">
+                <div class="meta">
+                  {fmtDateTime(hero.data.pubDate)} · Por {hero.data.author} · {readMinutes(hero)} min de leitura
+                </div>
+                <h1>
+                  <a href={postUrl(hero)}>{hero.data.title}</a>
+                </h1>
+              </div>
+            </div>
+            <div class="hero-desc">{hero.data.description}</div>
+          </article>
+
+          <div class="side-cards">
+            {side.map((p) => (
+              <article class="mini" style={catStyle(p.data.category)}>
+                <div class="mini-media media-fill">
+                  <a href={postUrl(p)} tabindex="-1" aria-hidden="true">
+                    <Thumb post={p} />
+                  </a>
+                  <span class="chip sm">{categories[p.data.category].label}</span>
+                </div>
+                <div class="mini-body">
+                  <span class="when">{fmtDateTime(p.data.pubDate)}</span>
+                  <h2>
+                    <a href={postUrl(p)}>{p.data.title}</a>
+                  </h2>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <p class="empty">Ainda não há matérias publicadas. Publique a primeira pelo painel em /admin.</p>
+      )
+    }
+
+    <AdSlot id="A2" />
+
+    <div class="cols">
+      <div class="main-col">
+        <div class="feed-head">
+          <h2 class="section-title">Últimas notícias</h2>
+          <div class="tabs" role="group" aria-label="Filtrar por editoria">
+            {tabs.map((t, i) => (
+              <button type="button" class="tab" data-filter={t.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="grid" id="feed">
+          {
+            feed.map((p, i) => (
+              <>
+                <PostCard post={p} />
+                {i === 2 && (
+                  <div class="feed-ad">
+                    <AdSlot id="A3" />
+                  </div>
+                )}
+              </>
+            ))
+          }
+        </div>
+
+        {
+          live.length > 0 && (
+            <section class="live-box" aria-labelledby="live-t">
+              <div class="live-head">
+                <h2 id="live-t">
+                  <span class="live-dot y" />
+                  Tempo real · cobertura contínua
+                </h2>
+                <small>Atualizado a cada publicação</small>
+              </div>
+              <ul class="timeline">
+                {live.map((p) => (
+                  <li style={`--accent:var(${categories[p.data.category].accentVar})`}>
+                    <time datetime={p.data.pubDate.toISOString()}>{fmtTime(p.data.pubDate)}</time>
+                    <h3>
+                      <a href={postUrl(p)}>{p.data.title}</a>
+                    </h3>
+                    <p>{p.data.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </div>
+
+      <Sidebar posts={destaques} />
+    </div>
+
+    <AdSlot id="A6" />
+  </div>
+</Base>
+
+<script>
+  // Filtro por editoria no feed da home.
+  const botoes = document.querySelectorAll<HTMLButtonElement>('.tab');
+  const cartoes = document.querySelectorAll<HTMLElement>('#feed .card');
+  botoes.forEach((botao) => {
+    botao.addEventListener('click', () => {
+      const alvo = botao.dataset.filter;
+      botoes.forEach((b) => b.setAttribute('aria-pressed', b === botao ? 'true' : 'false'));
+      cartoes.forEach((c) => {
+        c.hidden = alvo !== 'all' && c.dataset.cat !== alvo;
+      });
+    });
+  });
+</script>

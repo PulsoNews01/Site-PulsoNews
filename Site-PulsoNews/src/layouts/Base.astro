@@ -1,0 +1,124 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { site } from '../config';
+import { getPosts, fmtLong, postUrl } from '../lib/posts';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const { title, description = site.description, image, type = 'website', noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
+const ogImage = new URL(image || site.defaultImage, Astro.site).href;
+
+const posts = await getPosts();
+const latest = posts[0];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — RSS`} href="/rss.xml" />
+
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=Inter:wght@400;500;600;700;800;900&family=Merriweather:wght@400;700;900&display=swap"
+    />
+
+    <script is:inline>
+      // Aplica o tema escolhido antes de a página aparecer (evita piscar).
+      try {
+        var t = localStorage.getItem('pulso-theme');
+        if (t) document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+
+    {
+      site.gaId && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}></script>
+          <script is:inline define:vars={{ gaId: site.gaId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          </script>
+        </>
+      )
+    }
+    {
+      site.adsenseClient && (
+        <script
+          is:inline
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${site.adsenseClient}`}
+          crossorigin="anonymous"
+        ></script>
+      )
+    }
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+    <AdSlot id="A1" frame={false} />
+
+    {
+      latest && (
+        <div class="ticker">
+          <div class="container">
+            <span class="badge-live">
+              <span class="live-dot" />
+              AGORA
+            </span>
+            <a href={postUrl(latest)} class="ticker-link">
+              {latest.data.title}
+            </a>
+            <span class="ticker-date">{fmtLong()}</span>
+          </div>
+        </div>
+      )
+    }
+
+    <Header />
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

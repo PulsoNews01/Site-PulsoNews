@@ -1,0 +1,31 @@
+---
+import Thumb from './Thumb.astro';
+import { categories, catStyle } from '../lib/categories';
+import { postUrl, fmtDateTime, readMinutes } from '../lib/posts';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const cat = categories[post.data.category];
+---
+
+<article class="card" data-cat={post.data.category} style={catStyle(post.data.category)}>
+  <div class="card-media media-fill">
+    <a href={postUrl(post)} tabindex="-1" aria-hidden="true">
+      <Thumb post={post} />
+    </a>
+    <span class="chip sm">{cat.label}</span>
+  </div>
+  <div class="card-body">
+    <span class="card-time">{fmtDateTime(post.data.pubDate)}</span>
+    <h3><a href={postUrl(post)}>{post.data.title}</a></h3>
+    <p>{post.data.description}</p>
+    <div class="card-foot">
+      <span>Por {post.data.author}</span>
+      <span>{readMinutes(post)} min de leitura</span>
+    </div>
+  </div>
+</article>
