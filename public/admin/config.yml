@@ -1,5 +1,5 @@
 # Configuração do painel /admin (Decap CMS).
-# Troque seudominio.com.br pelo endereço real do site (ou pelo endereço .pages.dev enquanto testa).
+# Troque seudominio.com.br pelo endereço real do site (ou pelo endereço .workers.dev enquanto testa).
 
 backend:
   name: github
