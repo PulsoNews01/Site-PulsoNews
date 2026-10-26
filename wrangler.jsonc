@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "site-pulsonews",
-  "main": "worker.js",
+  "main": "worker/index.js",
   "compatibility_date": "2026-10-26",
   "assets": {
     "directory": "./dist",
