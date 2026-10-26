@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 
 // TROQUE pelo endereço real do site quando o domínio estiver ligado.
 // Enquanto usar o endereço provisório da Cloudflare, coloque aqui o endereço .pages.dev.
-const SITE_URL = 'https://seudominio.com.br';
+const SITE_URL = 'https://site-pulsonews.pulsonews01.workers.dev';
 
 // Insere um marcador depois do 2º parágrafo de cada matéria.
 // É nesse ponto que o anúncio A7 (dentro do texto) é encaixado.
