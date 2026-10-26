@@ -1,6 +1,6 @@
 # Pulso — site de notícias
 
-Site de notícias de tecnologia, política e entretenimento, feito com Astro e pensado para rodar de graça na Cloudflare Pages.
+Site de notícias de tecnologia, política e entretenimento, feito com Astro e pensado para rodar de graça na Cloudflare (Workers).
 As matérias são escritas num painel (`/admin`), sem mexer em código.
 
 ## O que tem em cada pasta
@@ -14,28 +14,30 @@ As matérias são escritas num painel (`/admin`), sem mexer em código.
 | `src/styles/global.css` | Cores e visual. |
 | `public/admin/` | O painel de edição (Decap CMS) e a configuração dele. |
 | `public/uploads/` | Imagens enviadas pelo painel. |
-| `functions/api/` | Login do painel pelo GitHub (roda na Cloudflare). |
+| `worker/` | Login do painel pelo GitHub (roda na Cloudflare). |
+| `wrangler.jsonc` | Configuração do Worker da Cloudflare (nome, pasta do site e regra do login). |
 
-## Colocar no ar (Cloudflare Pages)
+## Colocar no ar (Cloudflare Workers)
 
-1. No GitHub, abra o repositório e use **Add file → Upload files**. Arraste o **conteúdo** desta pasta (não o .zip) e clique em **Commit changes**.
-2. Em cloudflare.com, vá em **Workers & Pages → Create → Pages → Connect to Git** e escolha o repositório.
-3. Configure o build:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. Clique em **Save and Deploy**. Em alguns minutos o site abre num endereço `.pages.dev`.
+1. No GitHub, envie o conteúdo desta pasta para o repositório (**Add file → Upload files**, arrastando o **conteúdo** da pasta, não o .zip).
+2. Na Cloudflare, o projeto fica ligado ao repositório. A cada envio ao GitHub, o site é refeito sozinho.
+3. As configurações de build do projeto (em **Configurações → Compilações**) devem ser:
+   - **Comando de build:** `npm run build`
+   - **Comando de implantação:** `npx wrangler deploy`
+4. Acompanhe em **Implantações**. Em alguns minutos o site abre no endereço `.workers.dev`.
 5. Se o build der erro, copie a mensagem completa do log e envie para quem está ajudando com o projeto.
+
+O nome do projeto na Cloudflare precisa ser igual ao campo `name` do arquivo `wrangler.jsonc` (hoje: `site-pulsonews`).
 
 ## Trocar o endereço do site (quando tiver o domínio)
 
-O endereço aparece em **três lugares**. Troque `seudominio.com.br` pelo endereço real em todos:
+O endereço aparece em **três lugares**. Troque o endereço `.workers.dev` pelo real em todos:
 
 1. `astro.config.mjs` → linha `const SITE_URL = ...`
 2. `public/admin/config.yml` → `base_url`, `site_url` e `display_url`
 3. `src/config.ts` → o campo `email`
 
-Enquanto estiver testando no endereço `.pages.dev`, use esse endereço nos itens 1 e 2.
+No GitHub, também troque o **Authorization callback URL** do aplicativo OAuth para `https://SEU-ENDERECO/api/callback`.
 
 ## Ligar o painel /admin
 
@@ -44,11 +46,12 @@ O painel entra com a sua conta do GitHub. Isto é feito uma vez só:
 1. No GitHub: **Settings → Developer settings → OAuth Apps → New OAuth App**.
    - **Homepage URL:** o endereço do site
    - **Authorization callback URL:** `https://SEU-ENDERECO/api/callback`
+   - Desmarque **Expire user access tokens**
 2. Clique em **Generate a new client secret** e guarde o **Client ID** e o **Client secret**.
-3. Na Cloudflare, abra o projeto → **Settings → Variables and Secrets** e crie:
+3. Na Cloudflare, abra o projeto → **Configurações → Variáveis e segredos** e crie:
    - `GITHUB_CLIENT_ID` com o Client ID
-   - `GITHUB_CLIENT_SECRET` com o Client secret (marque como secreto)
-4. Faça um novo deploy (**Deployments → Retry deployment**).
+   - `GITHUB_CLIENT_SECRET` com o Client secret (tipo **Segredo**)
+4. Se a Cloudflare pedir, faça uma nova implantação para as variáveis valerem.
 5. Abra `SEU-ENDERECO/admin/`, clique em **Login with GitHub** e autorize.
 
 Só quem tem permissão de escrita no repositório consegue publicar.
@@ -83,7 +86,7 @@ Atenção: para visitantes da Europa e do Reino Unido o Google exige um aviso de
 
 ## Antes de divulgar (lista rápida)
 
-- [ ] Trocar `seudominio.com.br` nos três lugares
+- [ ] Trocar o endereço do site nos três lugares (e no aplicativo OAuth do GitHub)
 - [ ] Preencher Sobre, Equipe, Contato e Privacidade (procure por `[` nos textos entre colchetes)
 - [ ] Apagar as matérias de exemplo
 - [ ] `showAdPlaceholders: false` em `src/config.ts`
