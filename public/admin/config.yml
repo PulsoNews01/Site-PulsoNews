@@ -5,11 +5,11 @@ backend:
   name: github
   repo: PulsoNews01/Site-PulsoNews
   branch: main
-  base_url: https://seudominio.com.br
+  base_url: https://site-pulsonews.pulsonews01.workers.dev
   auth_endpoint: api/auth
 
-site_url: https://seudominio.com.br
-display_url: https://seudominio.com.br
+site_url: https://site-pulsonews.pulsonews01.workers.dev
+display_url: https://site-pulsonews.pulsonews01.workers.dev
 locale: pt
 
 media_folder: public/uploads
