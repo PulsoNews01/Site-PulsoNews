@@ -1,0 +1,63 @@
+---
+// Espaço de publicidade. Os códigos A1 a A8 são os mesmos do design aprovado.
+// Antes do AdSense: mostra uma caixa tracejada (ou nada, se showAdPlaceholders = false).
+// Depois do AdSense: mostra o anúncio real (preencha src/config.ts).
+import { site } from '../config';
+
+interface Props {
+  id: 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7' | 'A8';
+  frame?: boolean;
+  deferPush?: boolean;
+}
+
+const presets = {
+  A1: { name: 'Leaderboard', w: 728, h: 90, note: 'Topo da página' },
+  A2: { name: 'Banner horizontal', w: 970, h: 90, note: 'Abaixo dos destaques' },
+  A3: { name: 'In-feed nativo', w: 728, h: 120, note: 'Entre as matérias do feed' },
+  A4: { name: 'Retângulo médio', w: 300, h: 250, note: 'Topo da lateral' },
+  A5: { name: 'Meia página', w: 300, h: 600, note: 'Fim da lateral' },
+  A6: { name: 'Billboard', w: 970, h: 250, note: 'Antes do rodapé' },
+  A7: { name: 'In-article', w: 336, h: 280, note: 'Dentro do texto da matéria' },
+  A8: { name: 'Fim da matéria', w: 728, h: 90, note: 'Depois do último parágrafo' },
+};
+
+const { id, frame = true, deferPush = false } = Astro.props;
+const p = presets[id];
+const slot = site.adsenseSlots[id];
+const live = Boolean(site.adsenseClient && slot);
+const show = live || site.showAdPlaceholders;
+const isTop = id === 'A1';
+---
+
+{
+  show && (
+    <div
+      class:list={['adbox', { adframe: frame && !isTop, topad: isTop }]}
+      id={`slot-${id.toLowerCase()}`}
+    >
+      <span class="adlabel">PUBLICIDADE</span>
+      {live ? (
+        <>
+          <ins
+            class="adsbygoogle"
+            style="display:block;width:100%"
+            data-ad-client={site.adsenseClient}
+            data-ad-slot={slot}
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          />
+          {!deferPush && (
+            <script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          )}
+        </>
+      ) : (
+        <div class="adph" style={`max-width:${p.w}px;height:${p.h}px`}>
+          <strong>
+            {id} · {p.name} {p.w} × {p.h}
+          </strong>
+          <span>{p.note}</span>
+        </div>
+      )}
+    </div>
+  )
+}

@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import PostCard from '../../components/PostCard.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { categories, categoryList } from '../../lib/categories';
+import { getPosts } from '../../lib/posts';
+
+export function getStaticPaths() {
+  return categoryList.map((c) => ({ params: { categoria: c.slug } }));
+}
+
+const { categoria } = Astro.params;
+const cat = categories[categoria as keyof typeof categories];
+const todas = await getPosts();
+const posts = todas.filter((p) => p.data.category === cat.slug);
+const destaques = todas.filter((p) => p.data.category !== cat.slug).concat(posts);
+---
+
+<Base title={cat.label} description={cat.description}>
+  <div class="container page">
+    <header class="page-head" style={`--accent:var(${cat.accentVar})`}>
+      <h1>{cat.label}</h1>
+      <p>{cat.description}</p>
+    </header>
+
+    <div class="cols">
+      <div class="main-col">
+        {
+          posts.length > 0 ? (
+            <div class="grid">
+              {posts.map((p, i) => (
+                <>
+                  <PostCard post={p} />
+                  {i === 2 && (
+                    <div class="feed-ad">
+                      <AdSlot id="A3" />
+                    </div>
+                  )}
+                </>
+              ))}
+            </div>
+          ) : (
+            <p class="empty">Ainda não há matérias em {cat.label}.</p>
+          )
+        }
+      </div>
+      <Sidebar posts={destaques} />
+    </div>
+  </div>
+</Base>

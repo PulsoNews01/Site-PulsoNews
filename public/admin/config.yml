@@ -1,0 +1,56 @@
+# Configuração do painel /admin (Decap CMS).
+# Troque seudominio.com.br pelo endereço real do site (ou pelo endereço .pages.dev enquanto testa).
+
+backend:
+  name: github
+  repo: PulsoNews01/Site-PulsoNews
+  branch: main
+  base_url: https://seudominio.com.br
+  auth_endpoint: api/auth
+
+site_url: https://seudominio.com.br
+display_url: https://seudominio.com.br
+locale: pt
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: noticias
+    label: Matérias
+    label_singular: Matéria
+    folder: src/content/noticias
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} · {{category}}"
+    sortable_fields: ["pubDate", "title"]
+    fields:
+      - { label: Título, name: title, widget: string, hint: "Direto e específico. É o título que aparece no Google." }
+      - { label: Resumo, name: description, widget: text, hint: "1 ou 2 frases (até uns 155 caracteres). Aparece no Google e nos cards." }
+      - label: Editoria
+        name: category
+        widget: select
+        options:
+          - { label: Tecnologia, value: tecnologia }
+          - { label: Política, value: politica }
+          - { label: Entretenimento, value: entretenimento }
+      - { label: Autor, name: author, widget: string, default: "Redação Pulso" }
+      - { label: Data de publicação, name: pubDate, widget: datetime }
+      - { label: Atualizada em, name: updatedDate, widget: datetime, required: false, hint: "Preencha só se a matéria for atualizada depois de publicada." }
+      - { label: Imagem de capa, name: image, widget: image, required: false, hint: "Use foto sua ou com licença. Largura ideal: 1200 px. Prefira arquivos de até 300 KB." }
+      - { label: Descrição da imagem, name: imageAlt, widget: string, required: false, hint: "Descreva a foto em uma frase (acessibilidade e Google)." }
+      - { label: Crédito da imagem, name: imageCredit, widget: string, required: false, hint: "Ex.: Divulgação, Foto: Nome." }
+      - { label: Destaque na home, name: featured, widget: boolean, default: false }
+      - { label: Rascunho (não publicar ainda), name: draft, widget: boolean, default: false }
+      - { label: Assuntos, name: tags, widget: list, required: false, field: { label: Assunto, name: assunto, widget: string }, hint: "Palavras-chave curtas. Os mais usados aparecem na barra Em alta." }
+      - { label: Resumo rápido (tópicos), name: highlights, widget: list, required: false, field: { label: Tópico, name: topico, widget: string } }
+      - label: Perguntas frequentes
+        name: faq
+        widget: list
+        required: false
+        fields:
+          - { label: Pergunta, name: question, widget: string }
+          - { label: Resposta, name: answer, widget: text }
+      - { label: Texto da matéria, name: body, widget: markdown }

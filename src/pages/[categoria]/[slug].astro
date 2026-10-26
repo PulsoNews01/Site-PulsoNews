@@ -1,0 +1,231 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import PostCard from '../../components/PostCard.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import Thumb from '../../components/Thumb.astro';
+import { render } from 'astro:content';
+import { site } from '../../config';
+import { categories, catStyle } from '../../lib/categories';
+import { getPosts, postUrl, fmtDateTime, readMinutes } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { categoria: post.data.category, slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const all = await getPosts();
+const cat = categories[post.data.category];
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+
+const url = new URL(postUrl(post), Astro.site).href;
+const image = post.data.image ? new URL(post.data.image, Astro.site).href : undefined;
+const iniciais = post.data.author
+  .split(' ')
+  .filter(Boolean)
+  .map((s) => s[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+
+const mesmaEditoria = all.filter((p) => p.id !== post.id && p.data.category === post.data.category);
+const relacionadas = (mesmaEditoria.length > 0 ? mesmaEditoria : all.filter((p) => p.id !== post.id)).slice(0, 3);
+const destaques = all.filter((p) => p.id !== post.id);
+
+const whatsapp = `https://wa.me/?text=${encodeURIComponent(`${post.data.title} ${url}`)}`;
+
+// Dados estruturados para o Google (matéria, trilha de navegação e perguntas frequentes).
+const dados: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: post.data.title,
+    description: post.data.description,
+    image: image ? [image] : undefined,
+    datePublished: post.data.pubDate.toISOString(),
+    dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+    author: { '@type': 'Person', name: post.data.author },
+    publisher: { '@type': 'Organization', name: site.name },
+    mainEntityOfPage: url,
+    articleSection: cat.label,
+    inLanguage: 'pt-BR',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: cat.label, item: new URL(`/${cat.slug}/`, Astro.site).href },
+      { '@type': 'ListItem', position: 3, name: post.data.title, item: url },
+    ],
+  },
+];
+if (post.data.faq && post.data.faq.length > 0) {
+  dados.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: post.data.faq.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  });
+}
+const json = JSON.stringify(dados).replace(/</g, '\\u003c');
+---
+
+<Base title={post.data.title} description={post.data.description} image={image} type="article">
+  <script is:inline type="application/ld+json" slot="head" set:html={json} />
+
+  <div class="container page">
+    <div class="cols">
+      <div class="main-col">
+        <article class="article" style={catStyle(post.data.category)}>
+          <nav class="crumbs" aria-label="Trilha de navegação">
+            <a href="/">Início</a><span aria-hidden="true">›</span>
+            <a href={`/${cat.slug}/`}>{cat.label}</a><span aria-hidden="true">›</span>
+            <span class="here">{post.data.title}</span>
+          </nav>
+
+          <span class="chip">{cat.label}</span>
+          <h1>{post.data.title}</h1>
+          <p class="lead">{post.data.description}</p>
+
+          <div class="byline">
+            <div class="avatar" aria-hidden="true">{iniciais}</div>
+            <div class="byline-text">
+              <strong>Por {post.data.author}</strong>
+              <span>
+                Publicado em <time datetime={post.data.pubDate.toISOString()}>{fmtDateTime(post.data.pubDate)}</time>
+                {post.data.updatedDate && <> · Atualizado em {fmtDateTime(post.data.updatedDate)}</>}
+                · {readMinutes(post)} min de leitura
+              </span>
+            </div>
+            <div class="share">
+              <a class="icon-btn" href={whatsapp} target="_blank" rel="noopener" aria-label="Compartilhar no WhatsApp">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z"></path>
+                </svg>
+              </a>
+              <button type="button" class="icon-btn" id="copy-link" aria-label="Copiar link da matéria">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"></path>
+                  <path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <figure class="cover">
+            <div class="frame media-fill">
+              <Thumb post={post} eager />
+            </div>
+            {post.data.image && post.data.imageCredit && <figcaption>Crédito: {post.data.imageCredit}</figcaption>}
+          </figure>
+
+          {
+            post.data.highlights && post.data.highlights.length > 0 && (
+              <section class="notice" aria-labelledby="resumo">
+                <h2 id="resumo">Resumo rápido</h2>
+                <ul>
+                  {post.data.highlights.map((h) => <li>{h}</li>)}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            toc.length >= 2 && (
+              <nav class="toc" aria-labelledby="indice">
+                <h2 id="indice">Neste texto</h2>
+                <ol>
+                  {toc.map((h) => (
+                    <li>
+                      <a href={`#${h.slug}`}>{h.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )
+          }
+
+          <div class="prose">
+            <Content />
+          </div>
+
+          <!-- O anúncio A7 é movido para depois do 2º parágrafo (veja o script abaixo). -->
+          <div style="margin-top:28px">
+            <AdSlot id="A7" deferPush />
+          </div>
+
+          {
+            post.data.faq && post.data.faq.length > 0 && (
+              <section class="faq" aria-labelledby="faq-t">
+                <h2 id="faq-t">Perguntas frequentes</h2>
+                {post.data.faq.map((f) => (
+                  <div class="faq-item">
+                    <h3>{f.question}</h3>
+                    <p>{f.answer}</p>
+                  </div>
+                ))}
+              </section>
+            )
+          }
+
+          <div class="end-ad">
+            <AdSlot id="A8" />
+          </div>
+
+          <section class="author-box" aria-labelledby="autor">
+            <div class="avatar" aria-hidden="true">{iniciais}</div>
+            <div>
+              <h2 id="autor">Sobre {post.data.author}</h2>
+              <p>Conheça quem escreve no {site.name} e como trabalhamos.</p>
+              <a href="/equipe/">Ver a equipe →</a>
+            </div>
+          </section>
+        </article>
+
+        <section class="related" aria-labelledby="continue">
+          <h2 class="section-title" id="continue">Continue lendo</h2>
+          <div class="grid">
+            {relacionadas.map((p) => <PostCard post={p} />)}
+          </div>
+        </section>
+      </div>
+
+      <Sidebar posts={destaques} />
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Encaixa o anúncio A7 depois do 2º parágrafo e, se for um anúncio real, pede o anúncio agora.
+  const marcador = document.getElementById('in-article-marker');
+  const espaco = document.getElementById('slot-a7');
+  if (marcador && espaco) marcador.appendChild(espaco);
+  if (espaco && espaco.querySelector('ins.adsbygoogle')) {
+    try {
+      const w = window as any;
+      (w.adsbygoogle = w.adsbygoogle || []).push({});
+    } catch (e) {
+      // anúncio indisponível
+    }
+  }
+
+  // Botão "copiar link".
+  const botao = document.getElementById('copy-link');
+  botao?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      botao.setAttribute('aria-label', 'Link copiado!');
+    } catch (e) {
+      // navegador sem permissão para copiar
+    }
+  });
+</script>

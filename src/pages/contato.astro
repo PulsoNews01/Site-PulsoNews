@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config';
+---
+
+<Base title="Contato" description={`Fale com a redação do ${site.name}: pautas, correções, sugestões e anúncios.`}>
+  <div class="container page">
+    <header class="page-head">
+      <h1>Contato</h1>
+      <p>Escolha o assunto e escreva para o e-mail abaixo.</p>
+    </header>
+    <div class="prose plain" style="max-width:760px">
+      <p>
+        E-mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+      <h2>Pautas e denúncias</h2>
+      <p>Tem uma informação que merece ser apurada? Escreva com o máximo de detalhes e, se possível, com documentos ou links.</p>
+      <h2>Correções</h2>
+      <p>Encontrou um erro numa matéria? Envie o link e o trecho. Corrigimos e indicamos a correção no próprio texto.</p>
+      <h2>Anúncios e parcerias</h2>
+      <p>Para anunciar no {site.name}, escreva para o e-mail acima com o assunto "Anúncio". [Se tiver mídia kit, coloque o link aqui.]</p>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Buscar" description="Busque matérias no Pulso." noindex>
+  <div class="container page search-page">
+    <header class="page-head">
+      <h1>Buscar</h1>
+    </header>
+    <div style="max-width:760px">
+      <label for="q" class="pager-note">Digite o assunto que você procura</label>
+      <input id="q" type="search" placeholder="Ex.: privacidade, Congresso, séries" autocomplete="off" />
+      <p id="status" class="pager-note" role="status" aria-live="polite" style="margin-top:12px"></p>
+      <ul id="results" class="results"></ul>
+    </div>
+  </div>
+</Base>
+
+<script is:inline>
+  (function () {
+    var input = document.getElementById('q');
+    var lista = document.getElementById('results');
+    var status = document.getElementById('status');
+    var dados = null;
+
+    function normaliza(s) {
+      return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    }
+
+    function mostra(q) {
+      lista.innerHTML = '';
+      var termo = normaliza(q).trim();
+      if (!termo) {
+        status.textContent = '';
+        return;
+      }
+      var achados = dados.filter(function (p) {
+        return normaliza(p.t + ' ' + p.d + ' ' + (p.g || []).join(' ')).indexOf(termo) !== -1;
+      });
+      status.textContent = achados.length + (achados.length === 1 ? ' resultado' : ' resultados');
+      achados.forEach(function (p) {
+        var li = document.createElement('li');
+        var h = document.createElement('h3');
+        var a = document.createElement('a');
+        a.href = p.u;
+        a.textContent = p.t;
+        h.appendChild(a);
+        var d = document.createElement('p');
+        d.textContent = p.c + ' · ' + p.d;
+        li.appendChild(h);
+        li.appendChild(d);
+        lista.appendChild(li);
+      });
+    }
+
+    fetch('/busca.json')
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        dados = json;
+        var inicial = new URLSearchParams(window.location.search).get('q') || '';
+        input.value = inicial;
+        mostra(inicial);
+        input.addEventListener('input', function () { mostra(input.value); });
+      })
+      .catch(function () {
+        status.textContent = 'Não foi possível carregar a busca agora.';
+      });
+  })();
+</script>
