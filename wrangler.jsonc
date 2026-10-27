@@ -8,5 +8,10 @@
     "binding": "ASSETS",
     "not_found_handling": "404-page",
     "run_worker_first": ["/api/*"]
+  },
+  // Client ID do aplicativo OAuth do GitHub. Não é segredo (aparece no endereço de login).
+  // O Client SECRET nunca vai neste arquivo: ele fica só na Cloudflare, como Segredo.
+  "vars": {
+    "GITHUB_CLIENT_ID": "Ov23li6bfE7ENPE9Ryiu"
   }
 }
