@@ -14,7 +14,7 @@ As matérias são escritas num painel (`/admin`), sem mexer em código.
 | `src/styles/global.css` | Cores e visual. |
 | `public/admin/` | O painel de edição (Decap CMS) e a configuração dele. |
 | `public/uploads/` | Imagens enviadas pelo painel. |
-| `worker/` | Login do painel pelo GitHub (roda na Cloudflare). |
+| `worker.js` | Login do painel pelo GitHub (roda na Cloudflare). Fica na raiz, sem pasta, para não se perder no envio ao GitHub. |
 | `wrangler.jsonc` | Configuração do Worker da Cloudflare (nome, pasta do site e regra do login). |
 
 ## Colocar no ar (Cloudflare Workers)
