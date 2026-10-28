@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { site } from '../config';
 ---
 
-<Base title="Quem somos" description={`Conheça o ${site.name}: quem somos, o que cobrimos e como trabalhamos.`}>
+<Base title="Quem somos" description={`Conheça o ${site.name}: quem somos, o que cobrimos, como apuramos as notícias e como corrigimos erros.`}>
   <div class="container page">
     <header class="page-head">
       <h1>Quem somos</h1>
@@ -14,22 +14,34 @@ import { site } from '../config';
         objetivo é explicar o que está acontecendo com clareza, contexto e checagem, sem exagero e sem pressa de
         publicar antes de confirmar.
       </p>
+      <p>
+        Acreditamos que o leitor merece entender o assunto em poucos minutos, sem precisar decifrar manchete
+        enganosa nem texto cheio de jargão.
+      </p>
+
       <h2>O que cobrimos</h2>
       <ul>
-        <li><strong>Tecnologia:</strong> celulares, inteligência artificial, segurança digital e o impacto no dia a dia.</li>
-        <li><strong>Política:</strong> Congresso, governo e decisões públicas explicadas sem juridiquês.</li>
-        <li><strong>Entretenimento:</strong> cinema, séries, música, games e cultura pop.</li>
+        <li><strong>Tecnologia:</strong> celulares, inteligência artificial, segurança digital, empresas e o impacto da tecnologia no dia a dia.</li>
+        <li><strong>Política:</strong> Congresso, governo e decisões públicas explicadas sem juridiquês, com ênfase em como isso afeta a vida das pessoas.</li>
+        <li><strong>Entretenimento:</strong> cinema, séries, música, games e cultura pop, com dicas do que vale o seu tempo.</li>
       </ul>
+
       <h2>Como trabalhamos</h2>
+      <ul>
+        <li><strong>Fontes identificadas.</strong> Sempre que possível, indicamos de onde veio a informação: documentos oficiais, comunicados das empresas, órgãos públicos, veículos e pesquisas. Quando uma informação ainda não foi confirmada, deixamos isso claro no texto.</li>
+        <li><strong>Separação entre fato e opinião.</strong> Matérias informativas relatam os fatos. Textos de análise ou opinião são identificados como tal.</li>
+        <li><strong>Política sem partido.</strong> Em política, tratamos todos os lados com o mesmo critério e mostramos o que cada um disse ou fez, sem torcida.</li>
+        <li><strong>Atualização.</strong> Quando uma história muda, atualizamos a matéria e mostramos a data da última atualização.</li>
+        <li><strong>Imagens.</strong> Indicamos o crédito das imagens. Ilustrações criadas com inteligência artificial são identificadas como tal na legenda ou no crédito.</li>
+      </ul>
+
+      <h2>Erros e correções</h2>
       <p>
-        [Descreva aqui, com suas palavras, como a redação apura, confirma e corrige as informações. Cite o que
-        fazem quando erram: onde a correção aparece e como o leitor pode pedir uma revisão.]
+        Todo veículo erra, e o que importa é como corrige. Se encontrarmos ou recebermos a indicação de um erro, a
+        matéria é corrigida e a alteração é registrada no próprio texto. Para pedir uma revisão, envie o link da
+        matéria e o trecho em questão pela <a href="/contato/">página de contato</a>.
       </p>
-      <h2>Quem está por trás</h2>
-      <p>
-        [Quem é a pessoa ou a empresa responsável pelo site: nome, cidade e, se houver, CNPJ. Quanto mais
-        transparente esta página, melhor para a confiança dos leitores e para o Google.]
-      </p>
+
       <h2>Fale com a gente</h2>
       <p>Pautas, correções e sugestões: <a href="/contato/">página de contato</a>.</p>
     </div>
