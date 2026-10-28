@@ -8,7 +8,7 @@ description: Em um movimento para internalizar tecnologias de inteligência
 category: tecnologia
 author: Redação Pulso
 pubDate: 2026-10-27T09:01:00.000-03:00
-image: /uploads/materia_ia.jpg
+image: blob:https://gemini.google.com/88e2d8f6-d5e2-4c96-8f7f-53b95981c21b
 imageAlt: Fachada de agência do Itaú e logotipo luminoso da Meta conectados por
   circuitos digitais de inteligência artificial, ilustrando a corrida por
   modelos proprietários de dados e aquisições corporativas.
