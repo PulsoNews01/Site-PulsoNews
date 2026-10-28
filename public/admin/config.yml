@@ -15,6 +15,11 @@ locale: pt
 media_folder: public/uploads
 public_folder: /uploads
 
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
 collections:
   - name: noticias
     label: Matérias
@@ -24,6 +29,8 @@ collections:
     extension: md
     format: frontmatter
     slug: "{{slug}}"
+    slug_encoding: ascii
+    clean_accents: true
     summary: "{{title}} · {{category}}"
     sortable_fields: ["pubDate", "title"]
     fields:
