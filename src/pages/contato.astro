@@ -3,22 +3,38 @@ import Base from '../layouts/Base.astro';
 import { site } from '../config';
 ---
 
-<Base title="Contato" description={`Fale com a redação do ${site.name}: pautas, correções, sugestões e anúncios.`}>
+<Base title="Contato" description={`Fale com a redação do ${site.name}: pautas, denúncias, correções, sugestões, anúncios e parcerias.`}>
   <div class="container page">
     <header class="page-head">
       <h1>Contato</h1>
-      <p>Escolha o assunto e escreva para o e-mail abaixo.</p>
+      <p>Escolha o assunto e escreva para o e-mail abaixo. Respondemos em até 3 dias úteis.</p>
     </header>
     <div class="prose plain" style="max-width:760px">
       <p>
-        E-mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+        E-mail: <a href={`mailto:${site.email}`}>PulsoNews01@gmail.com{site.email}</a>
       </p>
+
       <h2>Pautas e denúncias</h2>
-      <p>Tem uma informação que merece ser apurada? Escreva com o máximo de detalhes e, se possível, com documentos ou links.</p>
+      <p>
+        Tem uma informação que merece ser apurada? Escreva com o máximo de detalhes: o que aconteceu, quando,
+        onde e quem pode confirmar. Se possível, anexe documentos ou links. Podemos manter sua identidade em
+        sigilo quando houver necessidade.
+      </p>
+
       <h2>Correções</h2>
-      <p>Encontrou um erro numa matéria? Envie o link e o trecho. Corrigimos e indicamos a correção no próprio texto.</p>
-      <h2>Anúncios e parcerias</h2>
-      <p>Para anunciar no {site.name}, escreva para o e-mail acima com o assunto "Anúncio". [Se tiver mídia kit, coloque o link aqui.]</p>
+      <p>
+        Encontrou um erro numa matéria? Envie o link e o trecho com o problema, com o assunto "Correção". Se o
+        erro for confirmado, corrigimos e indicamos a alteração no próprio texto.
+      </p>
+
+      <h2>Privacidade e dados pessoais</h2>
+      <p>
+        Para pedir acesso, correção ou exclusão dos seus dados, use o assunto "Privacidade". Veja também a
+        <a href="/privacidade/">Política de privacidade</a>.
+      </p>
+
+      <h2>Imprensa</h2>
+      <p>Jornalistas e assessorias podem usar o mesmo e-mail, com o assunto "Imprensa".</p>
     </div>
   </div>
 </Base>
