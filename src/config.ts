@@ -7,7 +7,7 @@ export const site = {
     'Notícias de tecnologia, política e entretenimento com clareza, contexto e checagem.',
 
   // E-mail que aparece no rodapé e na página de contato.
-  email: 'contato@seudominio.com.br',
+  email: 'pulsonews01@gmail.com',
 
   // Redes sociais: deixe vazio para esconder o botão no rodapé.
   social: {
