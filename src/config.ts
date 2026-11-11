@@ -20,7 +20,7 @@ export const site = {
   defaultImage: '/og-default.png',
 
   // Google Analytics 4: ID no formato G-XXXXXXXXXX. Vazio = desligado.
-  gaId: '',
+  gaId: 'G-LJJEM53M4Q',
 
   // Google AdSense: preencha DEPOIS de ser aprovado.
   // adsenseClient no formato ca-pub-0000000000000000
