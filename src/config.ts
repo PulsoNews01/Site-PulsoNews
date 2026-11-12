@@ -29,12 +29,12 @@ export const site = {
   adsenseSlots: {
     A1: '9428831595',
     A2: '4930524247',
-    A3: '',
+    A3: '7932926258',
     A4: '4247997968',
     A5: '6531205512',
     A6: '7173544205',
-    A7: '',
-    A8: '',
+    A7: '6384040865',
+    A8: '8124497945',
   } as Record<string, string>,
 
   // true = mostra as caixas tracejadas "PUBLICIDADE" onde irão os anúncios.
