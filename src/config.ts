@@ -24,15 +24,15 @@ export const site = {
 
   // Google AdSense: preencha DEPOIS de ser aprovado.
   // adsenseClient no formato ca-pub-0000000000000000
-  adsenseClient: '',
+  adsenseClient: 'ca-pub-3683206386941866',
   // ID de cada bloco de anúncio (criados dentro do painel do AdSense).
   adsenseSlots: {
-    A1: '',
-    A2: '',
+    A1: '9428831595',
+    A2: '4930524247',
     A3: '',
-    A4: '',
-    A5: '',
-    A6: '',
+    A4: '4247997968',
+    A5: '6531205512',
+    A6: '7173544205',
     A7: '',
     A8: '',
   } as Record<string, string>,
