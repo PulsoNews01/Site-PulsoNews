@@ -39,7 +39,7 @@ export const site = {
 
   // true = mostra as caixas tracejadas "PUBLICIDADE" onde irão os anúncios.
   // Coloque false antes de divulgar o site e enquanto o AdSense não estiver ligado.
-  showAdPlaceholders: true,
+  showAdPlaceholders: false,
 
   // Endereço de envio do formulário de newsletter (Brevo, MailerLite etc.).
   // Vazio = o formulário mostra um aviso de que ainda não está ativo.
